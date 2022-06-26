@@ -4,17 +4,22 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+env: 
+  IMAGE_NAME: cvpackage
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag cvpackage:$(date +%s)
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME:$(date +%s)
     - name: Log in to registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
     - name: Push image
-        run: |
+      run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
 
           # Change all uppercase to lowercase
